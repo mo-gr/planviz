@@ -8,7 +8,8 @@
                  [figwheel "0.1.3-SNAPSHOT"]]
   :jvm-opts ["-Xmx1G"]
   :plugins [[lein-cljsbuild "1.0.3"]
-            [lein-figwheel "0.1.3-SNAPSHOT"]]
+            [lein-figwheel "0.1.3-SNAPSHOT"]
+            [com.cemerick/clojurescript.test "0.3.1"]]
   :figwheel {
     :http-server-root "public"
     :port 3449
@@ -20,4 +21,10 @@
                 :output-to  "resources/public/devplatform.js"
                 :output-dir "resources/public/out"
                 :optimizations :none
-                :source-map true}}]})
+                :source-map true}}
+             {:id "test"
+              :source-paths ["src/devplatform" "test"]
+              :notify-command ["phantomjs" :cljs.test/runner "devplatform_test.js"]
+              :compiler {
+                :output-to "devplatform_test.js"
+                :optimizations :whitespace}}]})
