@@ -9,14 +9,15 @@
   :jvm-opts ["-Xmx1G"]
   :plugins [[lein-cljsbuild "1.0.3"]
             [lein-figwheel "0.1.3-SNAPSHOT"]
-            [com.cemerick/clojurescript.test "0.3.1"]]
+            [com.cemerick/clojurescript.test "0.3.1"]
+            [com.cemerick/austin "0.1.4"]]
   :figwheel {
     :http-server-root "public"
     :port 3449
     :css-dirs ["resources/public/css"]}
   :cljsbuild {
     :builds [{:id "dev"
-              :source-paths ["src/devplatform" "src/figwheel"]
+              :source-paths ["src/devplatform" "src/figwheel" "src/brepl"]
               :compiler {
                 :output-to  "resources/public/devplatform.js"
                 :output-dir "resources/public/out"
