@@ -2,6 +2,7 @@
 
 (enable-console-print!)
 
-(println "Hallo, World!")
+(println "Hallo, Cljs!")
+
 
 (defn add [a b] (+ a b))
