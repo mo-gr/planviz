@@ -26,31 +26,31 @@
                     (.select "#canvas")
                     (.selectAll "g")
                     (.data jsPlan (fn [key] (str
-                                              (.-day key)
-                                              (.-shift key)
-                                              (.-name key)))))
+                                              (aget key "day")
+                                              (aget key "shift")
+                                              (aget key "name")))))
         enterSet (.enter dataSet)
         enterGroup (-> enterSet
                      (.append "g")
-                     (.attr "transform" #(str "translate(" (* WIDTH (.-day %)) ",0)")))
+                     (.attr "transform" #(str "translate(" (* WIDTH (aget % "day")) ",0)")))
         exitSet (.exit dataSet)]
     (-> enterGroup
         (.append "rect")
         (.attr #js {:width WIDTH :height 1 :class "block"})
-        (.style "fill" #(shift-color (.-name %)))
+        (.style "fill" #(shift-color (aget % "name")))
         (.style "stroke" 1))
     (-> enterGroup
         (.append "text")
         (.style "fill" "white")
         (.attr #js {:y (/ HEIGHT 2) :x 3})
-        (.text #(.-name %)))
+        (.text #(aget % "name")))
     (-> dataSet
         (.transition)
         (.duration 1000)
         (.attr "transform" #(str "translate("
-                                 (* WIDTH (.-day %))
+                                 (* WIDTH (aget % "day"))
                                  ","
-                                 (* HEIGHT-HOUR (dec (.-shift %))) ")"))
+                                 (* HEIGHT-HOUR (dec (aget % "shift"))) ")"))
         (.selectAll ".block")
         (.attr #js {:height HEIGHT}))
 
@@ -66,7 +66,7 @@
        (map #(zipmap [:day :shift :name] %))))
 
 (defn updatePlan [e]
-  (let [v (.-value planInput)
+  (let [v (aget planInput "value")
         p (extractPlan v)]
     (plotPlan p)))
 
@@ -101,5 +101,3 @@
   (.addEventListener renderInput "click" updatePlan))
 
 (setup!)
-
-#_(plotPlan [{:day 1 :shift 1 :name "Bob"} {:day 1 :shift 2 :name "Betty"}] )

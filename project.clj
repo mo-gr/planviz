@@ -32,4 +32,14 @@
               :notify-command ["phantomjs" :cljs.test/runner "devplatform_test.js"]
               :compiler {
                 :output-to "devplatform_test.js"
-                :optimizations :whitespace}}]})
+                :optimizations :whitespace}}
+             {:id "prod"
+              :source-paths ["src/cljs/devplatform"]
+              :compiler {
+               :output-to  "resources/public/devplatform.min.js"
+               :output-dir "resources/public/prod-out"
+               :libs ["resources/public/d3.js"]
+               :externs ["resources/public/externs.js"]
+               :optimizations :advanced
+               :source-map "resources/public/devplatform.min.js.map"}}
+             ]})
