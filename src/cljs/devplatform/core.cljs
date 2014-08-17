@@ -38,7 +38,8 @@
         (.append "rect")
         (.attr #js {:width WIDTH :height 1 :class "block"})
         (.style "fill" #(shift-color (aget % "name")))
-        (.style "stroke" 1))
+        (.style "stroke-width" 1)
+        (.style "stroke" "black"))
     (-> enterGroup
         (.append "text")
         (.style "fill" "white")
