@@ -11,7 +11,12 @@
 (def HEIGHT-HOUR 20)
 (def HEIGHT (* 8 HEIGHT-HOUR))
 (def DAYS ["Mo" "Di" "Mi" "Do" "Fr" "Sa" "So"])
-(def HOURS (range 24))
+(def HOURS (map #(mod (+ % 6) 24) (range 24)))
+
+;; apparently those are necessary for advanced compilation :(
+(defn day [obj] (aget obj "day"))
+(defn name [obj] (aget obj "name"))
+(defn shift [obj] (aget obj "shift"))
 
 (defn shift-color [name]
   (let [toNumber #(-> (window/parseInt (nth (lower-case %1) %2) 36)
@@ -26,32 +31,32 @@
                     (.select "#canvas")
                     (.selectAll "g")
                     (.data jsPlan (fn [key] (str
-                                              (aget key "day")
-                                              (aget key "shift")
-                                              (aget key "name")))))
+                                              (day key)
+                                              (shift key)
+                                              (name key)))))
         enterSet (.enter dataSet)
         enterGroup (-> enterSet
                      (.append "g")
-                     (.attr "transform" #(str "translate(" (* WIDTH (aget % "day")) ",0)")))
+                     (.attr "transform" #(str "translate(" (* WIDTH (day %)) ",0)")))
         exitSet (.exit dataSet)]
     (-> enterGroup
         (.append "rect")
         (.attr #js {:width WIDTH :height 1 :class "block"})
-        (.style "fill" #(shift-color (aget % "name")))
+        (.style "fill" #(shift-color (name %)))
         (.style "stroke-width" 1)
         (.style "stroke" "black"))
     (-> enterGroup
         (.append "text")
         (.style "fill" "white")
         (.attr #js {:y (/ HEIGHT 2) :x 3})
-        (.text #(aget % "name")))
+        (.text #(name %)))
     (-> dataSet
         (.transition)
         (.duration 1000)
         (.attr "transform" #(str "translate("
-                                 (* WIDTH (aget % "day"))
+                                 (* WIDTH (day %))
                                  ","
-                                 (* HEIGHT-HOUR (dec (aget % "shift"))) ")"))
+                                 (* HEIGHT-HOUR (- (shift %) 4)) ")"))
         (.selectAll ".block")
         (.attr #js {:height HEIGHT}))
 
