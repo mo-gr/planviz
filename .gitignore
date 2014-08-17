@@ -11,4 +11,6 @@ pom.xml.asc
 
 devplatform.js
 devplatform.js.map
-
+devplatform.min.js
+devplatform.min.js.map
+resources/public/prod-out
