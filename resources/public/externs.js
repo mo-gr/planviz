@@ -1,3 +1,6 @@
+var require = {};
+var jsdom = {};
+jsdom.env();
 var d3 = {version: "1.27.1"};
 d3.select = function(selector) {};
 d3.max = function(array, f) {};

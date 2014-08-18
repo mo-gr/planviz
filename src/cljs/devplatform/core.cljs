@@ -1,11 +1,12 @@
 (ns devplatform.core
-  (:require [clojure.string :refer [split trim blank? replace join lower-case]]))
+  (:require [clojure.string :refer [split trim blank? replace join lower-case]]
+            [cljs.nodejs :as node]))
 
 (enable-console-print!)
-(def doc window/document)
-(def planInput (.getElementById doc "planInput"))
-(def renderInput (.getElementById doc "render"))
-(def d3 window/d3)
+;(def doc jsdom/document)
+(def planInput nil  #_(.getElementById doc "planInput"))
+(def renderInput nil  #_(.getElementById doc "render"))
+(def d3 (node/require "d3"))
 
 (def SLOTS 4)
 (def WIDTH 60)
@@ -20,7 +21,7 @@
 (defn shift [obj] (int (aget obj "shift")))
 
 (defn shift-color [name]
-  (let [toNumber #(-> (window/parseInt (nth (lower-case %1) %2) 36)
+  (let [toNumber #(-> (js/parseInt (nth (lower-case %1) %2) 36)
                      (/ 36)
                      (* 255)
                      (int))]
@@ -34,10 +35,11 @@
          (* slot WIDTH)
          (* WIDTH SLOTS (dec (day plan))))))
 
-(defn plotPlan [plan]
+(defn ^:export plotPlan [doc plan]
   (let [slot-state (atom {})
         jsPlan (clj->js plan)
         dataSet (-> d3
+                    (.select doc)
                     (.select "#canvas")
                     (.selectAll "g")
                     (.data jsPlan (fn [key] (str
@@ -60,8 +62,8 @@
         (.attr #js {:y (/ HEIGHT 2) :x 3})
         (.text #(name %)))
     (-> dataSet
-        (.transition)
-        (.duration 1000)
+        ;(.transition)
+        ;(.duration 1000)
         (.attr "transform" #(str "translate("
                                  (calc-x-offset % slot-state)
                                  ","
@@ -85,11 +87,13 @@
         p (extractPlan v)]
     (plotPlan p)))
 
-(defn prepareCanvas! []
+(defn ^:export prepareCanvas! [doc]
   (-> d3
+      (.select doc)
       (.select "#canvas")
       (.attr "width" (+ WIDTH (* SLOTS (count DAYS) WIDTH))))
   (-> d3
+      (.select doc)
       (.select "#canvas")
       (.selectAll "text.days")
       (.data (clj->js DAYS))
@@ -101,6 +105,7 @@
                                ",20)"))
       (.text #(str %)))
   (-> d3
+      (.select doc)
       (.select "#canvas")
       (.selectAll "text.hours")
       (.data (clj->js HOURS))
@@ -114,8 +119,8 @@
                                ")"))
       (.text #(str %))))
 
-(defn setup! []
-  (prepareCanvas!)
+(defn ^:export setup-dom! []
+  (prepareCanvas! doc)
   (.addEventListener renderInput "click" updatePlan))
 
-(setup!)
+#_(setup-dom!)

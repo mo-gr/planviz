@@ -33,6 +33,15 @@
               :compiler {
                 :output-to "devplatform_test.js"
                 :optimizations :whitespace}}
+             {:id "server"
+              :source-paths ["src/cljs/devplatform"]
+              :compiler {
+                          :output-to  "out/devplatform.min.js"
+                          :output-dir "out"
+                          :libs ["resources/public/d3.js"]
+                          :externs ["resources/public/externs.js"]
+                          :optimizations :advanced
+                          :source-map "out/devplatform.min.js.map"}}
              {:id "prod"
               :source-paths ["src/cljs/devplatform"]
               :compiler {
